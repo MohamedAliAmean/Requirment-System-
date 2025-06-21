@@ -1,0 +1,118 @@
+.glass-navbar {
+  background: rgba(24, 24, 32, 0.95);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border-radius: 0 0 1.5rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: background 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+@supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+  .glass-navbar {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+.nav-link {
+  color: #e0e7ef;
+  padding: 0.5rem 1.1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  position: relative;
+  transition: color 0.2s, background 0.3s, box-shadow 0.3s, transform 0.2s;
+  overflow: hidden;
+}
+
+.nav-link::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%;
+  bottom: 0.2rem;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #60a5fa, #a78bfa, #f472b6);
+  transition: width 0.3s cubic-bezier(0.4,0,0.2,1), left 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: #fff;
+  background: rgba(96, 165, 250, 0.12);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 2px 12px 0 rgba(96, 165, 250, 0.12);
+}
+
+.nav-link:hover::after, .nav-link:focus::after {
+  width: 80%;
+  left: 10%;
+}
+
+.nav-link-mobile {
+  color: #ffffff;
+  padding: 0.9rem 1.2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background 0.3s, color 0.2s, transform 0.2s;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.nav-link-mobile:hover, .nav-link-mobile:focus {
+  background: rgba(96, 165, 250, 0.18);
+  color: #fff;
+  transform: scale(1.04);
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s cubic-bezier(0.4,0,0.2,1);
+}
+
+.animate-slide-in {
+  animation: slideIn 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.animate-dropdown {
+  animation: dropdownIn 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.10);
+}
+
+/* Mobile menu slide-in */
+.md\:hidden .translate-x-full {
+  transform: translateX(100%);
+}
+.md\:hidden .translate-x-0 {
+  transform: translateX(0);
+}
+
+.mobile-menu-background {
+  background: rgba(24, 24, 32, 0.95);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+  .mobile-menu-background {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}

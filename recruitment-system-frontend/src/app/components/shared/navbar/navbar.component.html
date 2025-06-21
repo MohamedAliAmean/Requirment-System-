@@ -1,0 +1,118 @@
+<nav class="glass-navbar fixed w-full z-50 top-0 left-0 shadow-lg backdrop-blur-md">
+  <div class="container mx-auto flex justify-between items-center py-3 px-4">
+    <a routerLink="/" class="text-white text-2xl font-extrabold tracking-tight flex items-center gap-2 animate-fade-in">
+      <span class="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">Recruitment
+        System</span>
+    </a>
+    <button class="md:hidden text-white focus:outline-none" (click)="mobileMenuOpen = !mobileMenuOpen">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+    <div class="hidden md:flex items-center space-x-2 animate-slide-in">
+      <!-- Not logged in -->
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/" class="nav-link">Home</a>
+        <a routerLink="/register" class="nav-link">Register</a>
+        <a routerLink="/login" class="nav-link">Login</a>
+      </ng-container>
+      <!-- Logged in: role-based links -->
+      <ng-container *ngIf="isLoggedIn">
+        <ng-container *ngIf="userRole === 'job_poster' || userRole === 'company'">
+          <a routerLink="/job-poster/dashboard" class="nav-link">Dashboard</a>
+          <a routerLink="/job-poster/applications" class="nav-link">All Applications</a>
+          <a routerLink="/job-poster/my-jobs" class="nav-link">Jobs</a>
+        </ng-container>
+        <ng-container *ngIf="userRole === 'applicant'">
+          <a routerLink="/jobs" class="nav-link">All Jobs</a>
+          <a routerLink="/my-applications" class="nav-link">My Applications</a>
+        </ng-container>
+        <!-- Profile dropdown -->
+        <div class="relative group">
+          <button class="flex items-center nav-link focus:outline-none">
+            <img *ngIf="currentUser?.profile_picture_url"
+              [src]="'http://localhost:8000/storage/' + currentUser.profile_picture_url" alt="Profile"
+              class="w-8 h-8 rounded-full mr-2 border-2 border-blue-400 shadow-md transition-transform duration-300 group-hover:scale-110" />
+            <span>{{ currentUser?.name || 'Profile' }}</span>
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 z-50 animate-dropdown">
+            <a routerLink="/profile" class="block px-4 py-2 text-gray-800 hover:bg-blue-100 transition">Profile</a>
+            <a routerLink="/profile-settings"
+              class="block px-4 py-2 text-gray-800 hover:bg-blue-100 transition">Settings</a>
+            <button (click)="logout()"
+              class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 transition">Logout</button>
+          </div>
+        </div>
+        <!-- Dark/Light Mode Toggle Button -->
+        <button (click)="toggleTheme()"
+          class="ml-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors focus:outline-none flex items-center justify-center"
+          [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+          <svg *ngIf="!isDarkMode" class="w-6 h-6 text-yellow-300 transition-transform duration-300" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.07l-.71.71M21 12h-1M4 12H3m16.66 5.66l-.71-.71M4.05 4.93l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg *ngIf="isDarkMode" class="w-6 h-6 text-gray-200 transition-transform duration-300" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+          </svg>
+        </button>
+      </ng-container>
+    </div>
+    <!-- Mobile menu -->
+    <div class="md:hidden fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity duration-300"
+      *ngIf="mobileMenuOpen" (click)="mobileMenuOpen = false"></div>
+    <div
+      class="md:hidden fixed top-0 right-0 h-full w-64 shadow-lg z-50 transform transition-transform duration-300 mobile-menu-background"
+      [ngClass]="{ 'translate-x-0': mobileMenuOpen, 'translate-x-full': !mobileMenuOpen }">
+      <button class="absolute top-4 right-4 text-white" (click)="mobileMenuOpen = false">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="flex flex-col mt-20 space-y-4 px-6 animate-slide-in">
+        <ng-container *ngIf="!isLoggedIn">
+          <a routerLink="/" class="nav-link-mobile" (click)="mobileMenuOpen = false">Home</a>
+          <a routerLink="/register" class="nav-link-mobile" (click)="mobileMenuOpen = false">Register</a>
+          <a routerLink="/login" class="nav-link-mobile" (click)="mobileMenuOpen = false">Login</a>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <ng-container *ngIf="userRole === 'job_poster' || userRole === 'company'">
+            <a routerLink="/job-poster/dashboard" class="nav-link-mobile" (click)="mobileMenuOpen = false">Dashboard</a>
+            <a routerLink="/job-poster/applications" class="nav-link-mobile" (click)="mobileMenuOpen = false">All
+              Applications</a>
+            <a routerLink="/job-poster/my-jobs" class="nav-link-mobile" (click)="mobileMenuOpen = false">Jobs</a>
+          </ng-container>
+          <ng-container *ngIf="userRole === 'applicant'">
+            <a routerLink="/jobs" class="nav-link-mobile" (click)="mobileMenuOpen = false">All Jobs</a>
+            <a routerLink="/my-applications" class="nav-link-mobile" (click)="mobileMenuOpen = false">My
+              Applications</a>
+          </ng-container>
+          <a routerLink="/profile" class="nav-link-mobile" (click)="mobileMenuOpen = false">Profile</a>
+          <a routerLink="/profile-settings" class="nav-link-mobile" (click)="mobileMenuOpen = false">Settings</a>
+          <button (click)="logout(); mobileMenuOpen = false" class="nav-link-mobile text-red-500">Logout</button>
+        </ng-container>
+        <!-- Dark/Light Mode Toggle Button (Mobile) -->
+        <button (click)="toggleTheme()"
+          class="p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors focus:outline-none flex items-center justify-center"
+          [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+          <svg *ngIf="!isDarkMode" class="w-6 h-6 text-yellow-300 transition-transform duration-300" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.07l-.71.71M21 12h-1M4 12H3m16.66 5.66l-.71-.71M4.05 4.93l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg *ngIf="isDarkMode" class="w-6 h-6 text-gray-200 transition-transform duration-300" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

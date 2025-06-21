@@ -1,0 +1,120 @@
+<div class="w-full min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center">
+  <!-- Full-width Banner -->
+  <div class="w-full relative flex justify-center">
+    <div class="w-full h-72 md:h-80 bg-cover bg-center bg-no-repeat rounded-b-2xl shadow-lg dark:shadow-2xl"
+      [style.background-image]="'url(' + ('http://localhost:8000/storage/' + (currentUser?.background_image_url || 'https://via.placeholder.com/1200x300/3B82F6/FFFFFF?text=Profile+Banner')) + ')'">
+      <div class="absolute inset-0 bg-black opacity-30 rounded-b-2xl"></div>
+    </div>
+    <!-- Overlapping Profile Image -->
+    <div class="absolute left-1/2 transform -translate-x-1/2 bottom-[-72px] md:bottom-[-90px] z-20">
+      <img
+        [src]="'http://localhost:8000/storage/' + (currentUser?.profile_picture_url || 'https://via.placeholder.com/150')"
+        alt="Profile Picture"
+        class="w-36 h-36 md:w-44 md:h-44 rounded-full object-cover border-4 border-white shadow-xl bg-white dark:border-gray-800 dark:bg-gray-900" />
+    </div>
+  </div>
+
+  <!-- Main Container (100% width, max 1000px) -->
+  <div class="w-full flex flex-col items-center">
+    <!-- Profile Info Card -->
+    <div class="w-full flex justify-center mt-32 md:mt-40">
+      <div
+        class="bg-white dark:bg-gray-800 shadow-lg dark:shadow-2xl rounded-2xl px-8 py-10 w-full max-w-[1000px] text-center flex flex-col items-center animate-fade-in relative text-gray-900 dark:text-gray-100">
+        <h2 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-2">{{ currentUser?.name }}</h2>
+        <p class="text-xl text-blue-600 dark:text-blue-300 mb-2">{{ currentUser?.email }}</p>
+        <p *ngIf="currentUser?.bio" class="text-gray-700 dark:text-gray-200 mb-4">{{ currentUser?.bio }}</p>
+        <p *ngIf="!currentUser?.bio" class="text-gray-500 dark:text-gray-400 mb-4">No bio available. <a
+            routerLink='/profile-settings' class="text-blue-500 dark:text-blue-300 hover:underline">Add a
+            bio</a></p>
+        <a routerLink="/profile-settings"
+          class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-bold py-2 px-6 rounded-lg inline-block transition-all duration-200">Edit
+          Profile</a>
+      </div>
+    </div>
+
+    <!-- Jobs Posted (for company/job-poster) -->
+    <div *ngIf="currentUser?.role === 'company' || currentUser?.role === 'job_poster'"
+      class="w-full flex justify-center mt-10">
+      <div
+        class="bg-white dark:bg-gray-800 shadow-lg dark:shadow-2xl rounded-2xl p-10 w-full max-w-[1000px] animate-fade-in text-gray-900 dark:text-gray-100">
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Jobs You've Posted</h3>
+        <div *ngIf="isLoading" class="flex justify-center items-center p-4">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <span class="ml-2">Loading jobs...</span>
+        </div>
+        <div *ngIf="errorMessage"
+          class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded relative mb-4"
+          role="alert">
+          <strong class="font-bold">Error!</strong>
+          <span class="block sm:inline">{{ errorMessage }}</span>
+        </div>
+        <div *ngIf="!isLoading && postedJobs.length === 0 && !errorMessage"
+          class="bg-blue-100 dark:bg-blue-900 border-t border-b border-blue-500 dark:border-blue-700 text-blue-700 dark:text-blue-200 px-4 py-3 mb-4"
+          role="alert">
+          <p class="font-bold">No Jobs Found</p>
+          <p class="text-sm">You haven't posted any jobs yet.</p>
+        </div>
+        <div *ngIf="!isLoading && postedJobs.length > 0" class="space-y-4">
+          <div *ngFor="let job of postedJobs"
+            class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between shadow-sm hover:shadow-lg transition-shadow duration-300">
+            <div>
+              <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ job.title }}</h4>
+              <p class="text-gray-600 dark:text-gray-300">{{ job.company_name }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Posted: {{ job.created_at |
+                date:'mediumDate' }}</p>
+            </div>
+            <div class="mt-2 md:mt-0">
+              <span class="px-3 py-1 rounded-full text-sm font-medium {{ getStatusColor(job.status) }}">
+                {{ job.status | titlecase }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jobs Applied To (for applicants) -->
+    <div *ngIf="currentUser?.role === 'applicant'" class="w-full flex justify-center mt-10">
+      <div
+        class="bg-white dark:bg-gray-800 shadow-lg dark:shadow-2xl rounded-2xl p-10 w-full max-w-[1000px] animate-fade-in text-gray-900 dark:text-gray-100">
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Jobs You've Applied To</h3>
+        <div *ngIf="isLoading" class="flex justify-center items-center p-4">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <span class="ml-2">Loading applications...</span>
+        </div>
+        <div *ngIf="errorMessage"
+          class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded relative mb-4"
+          role="alert">
+          <strong class="font-bold">Error!</strong>
+          <span class="block sm:inline">{{ errorMessage }}</span>
+        </div>
+        <div *ngIf="!isLoading && applications.length === 0 && !errorMessage"
+          class="bg-blue-100 dark:bg-blue-900 border-t border-b border-blue-500 dark:border-blue-700 text-blue-700 dark:text-blue-200 px-4 py-3 mb-4"
+          role="alert">
+          <p class="font-bold">No Applications Found</p>
+          <p class="text-sm">You haven't applied to any jobs yet.</p>
+        </div>
+        <div *ngIf="!isLoading && applications.length > 0" class="space-y-4">
+          <div *ngFor="let application of applications"
+            class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between shadow-sm hover:shadow-lg transition-shadow duration-300">
+            <div>
+              <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ application.job?.title ||
+                'Job Title Not
+                Available' }}</h4>
+              <p class="text-gray-600 dark:text-gray-300">{{ application.job?.company_name || 'Company Not
+                Available' }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Applied: {{ application.created_at |
+                date:'mediumDate' }}
+              </p>
+            </div>
+            <div class="mt-2 md:mt-0">
+              <span class="px-3 py-1 rounded-full text-sm font-medium {{ getStatusColor(application.status) }}">
+                {{ application.status | titlecase }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  @apply bg-gray-100 dark:bg-gray-900;
+}
+
+main {
+  flex-grow: 1;
+}

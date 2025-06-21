@@ -1,0 +1,112 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Register</h2>
+
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+      role="alert">
+      <span class="block sm:inline" [innerHTML]="errorMessage"></span>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+        <input type="text" id="name" formControlName="name"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <div *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)" class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['name'].errors?.['required']">Name is required.</div>
+        </div>
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" formControlName="email"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['email'].errors?.['required']">Email is required.</div>
+          <div *ngIf="f['email'].errors?.['email']">Email must be a valid email address.</div>
+        </div>
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input type="password" id="password" formControlName="password"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)"
+          class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['password'].errors?.['required']">Password is required.</div>
+          <div *ngIf="f['password'].errors?.['minlength']">Password must be at least 8 characters.</div>
+        </div>
+      </div>
+
+      <div>
+        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+        <input type="password" id="password_confirmation" formControlName="password_confirmation"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <div
+          *ngIf="f['password_confirmation'].invalid && (f['password_confirmation'].dirty || f['password_confirmation'].touched) || registerForm.errors?.['mismatch']"
+          class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['password_confirmation'].errors?.['required']">Confirm Password is required.</div>
+          <div *ngIf="registerForm.errors?.['mismatch']">Passwords do not match.</div>
+        </div>
+      </div>
+
+      <div>
+        <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+        <input type="text" id="phone_number" formControlName="phone_number"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <div *ngIf="f['phone_number'].invalid && (f['phone_number'].dirty || f['phone_number'].touched)"
+          class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['phone_number'].errors?.['required']">Phone Number is required.</div>
+        </div>
+      </div>
+
+      <div>
+        <label for="role" class="block text-sm font-medium text-gray-700">Register As</label>
+        <select id="role" formControlName="role"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+          <option value="applicant">Job Applicant</option>
+          <option value="company">Company</option>
+          <option value="job_poster">Job Poster</option>
+        </select>
+        <div *ngIf="f['role'].invalid && (f['role'].dirty || f['role'].touched)" class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['role'].errors?.['required']">Role is required.</div>
+        </div>
+      </div>
+
+      <div *ngIf="f['role'].value === 'company'">
+        <label for="company_type" class="block text-sm font-medium text-gray-700">Company Type</label>
+        <select id="company_type" formControlName="company_type"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+          <option value="">Select Company Type</option>
+          <option value="startup">Startup</option>
+          <option value="national">National</option>
+          <option value="multinational">Multinational</option>
+        </select>
+        <div *ngIf="f['company_type'].invalid && (f['company_type'].dirty || f['company_type'].touched)"
+          class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['company_type'].errors?.['required']">Company Type is required.</div>
+        </div>
+      </div>
+
+      <div *ngIf="f['role'].value === 'company' || f['role'].value === 'job_poster'">
+        <label for="company_name" class="block text-sm font-medium text-gray-700">Company Name</label>
+        <input type="text" id="company_name" formControlName="company_name"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <div *ngIf="f['company_name'].invalid && (f['company_name'].dirty || f['company_name'].touched)"
+          class="text-red-500 text-xs mt-1">
+          <div *ngIf="f['company_name'].errors?.['required']">Company Name is required.</div>
+        </div>
+      </div>
+
+      <button type="submit"
+        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Register
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-gray-600">
+      Already have an account?
+      <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-500">Login here</a>
+    </p>
+  </div>
+</div>

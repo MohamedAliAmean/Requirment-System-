@@ -1,0 +1,272 @@
+<div class="container mx-auto p-4">
+    <h2 class="text-3xl font-bold mb-6">Job Applications</h2>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <span class="ml-2">Loading applications...</span>
+    </div>
+
+    <div *ngIf="successMessage"
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline">{{ successMessage }}</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+        role="alert">
+        <strong class="font-bold">Error!</strong>
+        <span class="block sm:inline">{{ errorMessage }}</span>
+    </div>
+
+    <div *ngIf="!isLoading && applications.length === 0 && !errorMessage"
+        class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 mb-4" role="alert">
+        <p class="font-bold">No Applications Found</p>
+        <p class="text-sm">There are no applications for this job yet.</p>
+    </div>
+
+    <!-- Applications Summary -->
+    <div *ngIf="!isLoading && applications.length > 0" class="mb-6">
+        <div class="bg-white shadow-md rounded-lg p-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Applications Summary</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ applications.length }}</div>
+                    <div class="text-sm text-gray-600">Total Applications</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-yellow-600">{{ getApplicationsByStatus('pending').length }}
+                    </div>
+                    <div class="text-sm text-gray-600">Pending</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-green-600">{{ getApplicationsByStatus('accepted').length }}
+                    </div>
+                    <div class="text-sm text-gray-600">Accepted</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-red-600">{{ getApplicationsByStatus('rejected').length }}</div>
+                    <div class="text-sm text-gray-600">Rejected</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications List -->
+    <div *ngIf="!isLoading && applications.length > 0" class="grid gap-6">
+        <div *ngFor="let application of applications"
+            class="bg-white shadow-lg rounded-lg overflow-hidden application-card">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ application.applicant?.name || 'N/A' }}</h3>
+                        <p class="text-gray-600">{{ application.applicant?.email || 'N/A' }}</p>
+                        <p class="text-sm text-gray-500">Applied: {{ application.created_at | date:'medium' }}</p>
+                        <p class="text-sm text-gray-500">Phone: {{ application.applicant?.phone_number || 'Not provided'
+                            }}</p>
+                    </div>
+                    <div class="flex flex-col items-end space-y-2">
+                        <span
+                            class="px-3 py-1 rounded-full text-sm font-medium status-badge {{ getStatusColor(application.status) }}">
+                            {{ getStatusIcon(application.status) }} {{ application.status | titlecase }}
+                        </span>
+                        <p class="text-xs text-gray-500">{{ getStatusMessage(application.status) }}</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-semibold text-gray-900 mb-2">Quick Preview:</h4>
+                    <div class="bg-gray-50 p-3 rounded-md">
+                        <p class="text-gray-700 text-sm">
+                            <strong>Cover Letter:</strong>
+                            {{ application.cover_letter || 'No cover letter provided' | slice:0:100 }}{{
+                            (application.cover_letter || '').length > 100 ? '...' : '' }}
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-2" *ngIf="application.applicant?.skills?.length">
+                            <span *ngFor="let skill of application.applicant.skills.slice(0, 3)"
+                                class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+                                {{ skill.name }}
+                            </span>
+                            <span *ngIf="application.applicant.skills.length > 3"
+                                class="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded">
+                                +{{ application.applicant.skills.length - 3 }} more
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <button (click)="viewApplicationDetails(application)"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm action-button">
+                        📋 View Details
+                    </button>
+                    <button (click)="downloadCv(application.id, application.applicant?.name || 'applicant')"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm action-button">
+                        📄 Download CV
+                    </button>
+
+                    <ng-container *ngIf="application.status === 'pending'">
+                        <button (click)="updateStatus(application.id, 'accepted')"
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm action-button">
+                            ✅ Accept
+                        </button>
+                        <button (click)="updateStatus(application.id, 'rejected')"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm action-button">
+                            ❌ Reject
+                        </button>
+                    </ng-container>
+
+                    <ng-container *ngIf="application.status === 'accepted'">
+                        <button (click)="updateStatus(application.id, 'rejected')"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm action-button">
+                            ❌ Reject
+                        </button>
+                    </ng-container>
+
+                    <ng-container *ngIf="application.status === 'rejected'">
+                        <button (click)="updateStatus(application.id, 'accepted')"
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm action-button">
+                            ✅ Accept
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application Details Modal -->
+<div *ngIf="showDetailsModal"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 modal-backdrop">
+    <div
+        class="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white details-modal">
+        <div class="mt-3">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Application Details</h3>
+                <button (click)="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div *ngIf="selectedApplication" class="space-y-6">
+                <!-- Applicant Information -->
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-lg text-blue-900 mb-3">Applicant Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-blue-700"><strong>Name:</strong> {{ selectedApplication.applicant?.name }}
+                            </p>
+                            <p class="text-blue-700"><strong>Email:</strong> {{ selectedApplication.applicant?.email }}
+                            </p>
+                            <p class="text-blue-700"><strong>Phone:</strong> {{
+                                selectedApplication.applicant?.phone_number || 'Not provided' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-blue-700"><strong>Role:</strong> {{ selectedApplication.applicant?.role |
+                                titlecase }}</p>
+                            <p class="text-blue-700"><strong>Member Since:</strong> {{
+                                selectedApplication.applicant?.created_at | date:'mediumDate' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Status -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h5 class="font-semibold text-gray-900 mb-3">Application Status</h5>
+                    <div class="flex items-center space-x-3">
+                        <span
+                            class="px-3 py-1 rounded-full text-sm font-medium status-badge {{ getStatusColor(selectedApplication.status) }}">
+                            {{ getStatusIcon(selectedApplication.status) }} {{ selectedApplication.status | titlecase }}
+                        </span>
+                        <p class="text-gray-700">{{ getStatusMessage(selectedApplication.status) }}</p>
+                    </div>
+                </div>
+
+                <!-- Application Timeline -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h5 class="font-semibold text-gray-900 mb-3">Application Timeline</h5>
+                    <div class="space-y-2">
+                        <p class="text-gray-700"><strong>Applied:</strong> {{ selectedApplication.created_at |
+                            date:'fullDate' }} at {{ selectedApplication.created_at | date:'shortTime' }}</p>
+                        <p class="text-gray-700"><strong>Last Updated:</strong> {{ selectedApplication.updated_at |
+                            date:'fullDate' }} at {{ selectedApplication.updated_at | date:'shortTime' }}</p>
+                    </div>
+                </div>
+
+                <!-- Cover Letter -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h5 class="font-semibold text-gray-900 mb-3">Cover Letter</h5>
+                    <div class="bg-white p-4 rounded border">
+                        <p class="text-gray-700 whitespace-pre-wrap">{{ selectedApplication.cover_letter || 'No cover
+                            letter was provided with this application.' }}</p>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="bg-gray-50 p-4 rounded-lg" *ngIf="selectedApplication.applicant?.skills?.length">
+                    <h5 class="font-semibold text-gray-900 mb-3">Skills</h5>
+                    <div class="flex flex-wrap gap-2">
+                        <span *ngFor="let skill of selectedApplication.applicant.skills"
+                            class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+                            {{ skill.name }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="bg-gray-50 p-4 rounded-lg" *ngIf="selectedApplication.applicant?.bio">
+                    <h5 class="font-semibold text-gray-900 mb-3">Bio</h5>
+                    <div class="bg-white p-4 rounded border">
+                        <p class="text-gray-700">{{ selectedApplication.applicant.bio }}</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center pt-4 border-t">
+                    <div class="flex space-x-2">
+                        <button
+                            (click)="downloadCv(selectedApplication.id, selectedApplication.applicant?.name || 'applicant')"
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded action-button">
+                            📄 Download CV
+                        </button>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <ng-container *ngIf="selectedApplication.status === 'pending'">
+                            <button (click)="updateStatus(selectedApplication.id, 'accepted')"
+                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded action-button">
+                                ✅ Accept Application
+                            </button>
+                            <button (click)="updateStatus(selectedApplication.id, 'rejected')"
+                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded action-button">
+                                ❌ Reject Application
+                            </button>
+                        </ng-container>
+
+                        <ng-container *ngIf="selectedApplication.status === 'accepted'">
+                            <button (click)="updateStatus(selectedApplication.id, 'rejected')"
+                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded action-button">
+                                ❌ Reject Application
+                            </button>
+                        </ng-container>
+
+                        <ng-container *ngIf="selectedApplication.status === 'rejected'">
+                            <button (click)="updateStatus(selectedApplication.id, 'accepted')"
+                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded action-button">
+                                ✅ Accept Application
+                            </button>
+                        </ng-container>
+
+                        <button (click)="closeDetailsModal()"
+                            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded action-button">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
