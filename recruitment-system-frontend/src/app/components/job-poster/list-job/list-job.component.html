@@ -24,9 +24,9 @@
     </div>
 
     <!-- Jobs List -->
-    <div *ngIf="!isLoading && jobs.length > 0" class="space-y-6">
+    <div *ngIf="!isLoading && jobs.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       <div *ngFor="let job of jobs"
-        class="bg-card border border-border-color p-6 rounded-lg hover:shadow-lg transition-shadow duration-200">
+        class="bg-card border border-border-color p-6 rounded-lg hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
         <div class="flex justify-between items-start">
           <div>
             <h3 class="text-xl font-bold text-text-color">{{ job.title }}</h3>
