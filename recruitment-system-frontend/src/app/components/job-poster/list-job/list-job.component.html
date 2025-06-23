@@ -1,60 +1,60 @@
-<div class="container mx-auto p-4">
-  <h2 class="text-3xl font-bold mb-6">My Posted Jobs</h2>
+<div class="bg-background-color text-text-color pt-24 pb-12">
+  <div class="container mx-auto p-4">
+    <h2 class="text-3xl font-bold mb-6 text-text-color">My Posted Jobs</h2>
 
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="flex justify-center items-center p-4">
-    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-    <span class="ml-2">Loading your jobs...</span>
-  </div>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center items-center p-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <span class="ml-2 text-muted">Loading your jobs...</span>
+    </div>
 
-  <!-- Error Message -->
-  <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-    role="alert">
-    <strong class="font-bold">Error!</strong>
-    <span class="block sm:inline">{{ errorMessage }}</span>
-  </div>
+    <!-- Error Message -->
+    <div *ngIf="errorMessage"
+      class="bg-red-500 bg-opacity-20 border border-red-500 text-red-500 px-4 py-3 rounded relative mb-4" role="alert">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">{{ errorMessage }}</span>
+    </div>
 
-  <!-- No Jobs Message -->
-  <div *ngIf="!isLoading && jobs.length === 0 && !errorMessage"
-    class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 mb-4" role="alert">
-    <p class="font-bold">No Jobs Found</p>
-    <p class="text-sm">You haven't posted any jobs yet. <a routerLink="/job-poster/create-job"
-        class="font-bold text-blue-700 hover:text-blue-800">Create your first job!</a></p>
-  </div>
+    <!-- No Jobs Message -->
+    <div *ngIf="!isLoading && jobs.length === 0 && !errorMessage"
+      class="bg-primary bg-opacity-20 border-t border-b border-primary text-primary px-4 py-3 mb-4" role="alert">
+      <p class="font-bold">No Jobs Found</p>
+      <p class="text-sm">You haven't posted any jobs yet. <a routerLink="/job-poster/create-job"
+          class="font-bold text-primary hover:underline">Create your first job!</a></p>
+    </div>
 
-  <!-- Jobs List -->
-  <div *ngIf="!isLoading && jobs.length > 0" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-    <div *ngFor="let job of jobs" class="border p-4 mb-4 rounded-md hover:shadow-lg transition-shadow duration-200">
-      <div class="flex justify-between items-start">
-        <div>
-          <h3 class="text-xl font-bold text-gray-800">{{ job.title }}</h3>
-          <p class="text-gray-600 mt-1">Company: {{ job.company_name }}</p>
-        </div>
-        <span [ngClass]="{
-          'px-2 py-1 rounded text-sm': true,
-          'bg-green-100 text-green-800': job.status === 'active',
-          'bg-red-100 text-red-800': job.status === 'closed'
+    <!-- Jobs List -->
+    <div *ngIf="!isLoading && jobs.length > 0" class="space-y-6">
+      <div *ngFor="let job of jobs"
+        class="bg-card border border-border-color p-6 rounded-lg hover:shadow-lg transition-shadow duration-200">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-xl font-bold text-text-color">{{ job.title }}</h3>
+            <p class="text-muted mt-1">Company: {{ job.company_name }}</p>
+          </div>
+          <span class="status-badge" [ngClass]="{
+            'status-badge-active': job.status === 'active',
+            'status-badge-closed': job.status === 'closed'
         }">
-          {{ job.status | titlecase }}
-        </span>
-      </div>
-
-      <p class="text-gray-700 mt-2">{{ job.description }}</p>
-      <p class="text-gray-600 mt-2">Requirements: {{ job.requirements }}</p>
-      <p class="text-gray-600 mt-2">
-        Salary Range: ${{ job.min_salary | number }} - ${{ job.max_salary | number }}
-      </p>
-
-      <div class="mt-4 flex items-center justify-between">
-        <div class="flex space-x-4">
-          <a [routerLink]="['/job-poster/edit-job', job.id]"
-            class="text-blue-500 hover:text-blue-700 hover:underline">Edit Job</a>
-          <a [routerLink]="['/job-poster/applications', job.id]"
-            class="text-green-500 hover:text-green-700 hover:underline">
-            View Applications ({{ job.number_of_applicants || 0 }})
-          </a>
+            {{ job.status | titlecase }}
+          </span>
         </div>
-        <p class="text-sm text-gray-500">Posted: {{ job.created_at | date:'mediumDate' }}</p>
+
+        <p class="text-muted mt-2">{{ job.description }}</p>
+        <p class="text-muted mt-2">Requirements: {{ job.requirements }}</p>
+        <p class="text-muted mt-2">
+          Salary Range: ${{ job.min_salary | number }} - ${{ job.max_salary | number }}
+        </p>
+
+        <div class="mt-4 flex items-center justify-between">
+          <div class="flex space-x-4">
+            <a [routerLink]="['/job-poster/edit-job', job.id]" class="btn btn-secondary text-sm">Edit Job</a>
+            <a [routerLink]="['/job-poster/applications', job.id]" class="btn btn-primary text-sm">
+              View Applications ({{ job.number_of_applicants || 0 }})
+            </a>
+          </div>
+          <p class="text-sm text-muted">Posted: {{ job.created_at | date:'mediumDate' }}</p>
+        </div>
       </div>
     </div>
   </div>

@@ -1,18 +1,91 @@
-/* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn {
+    @apply font-bold py-2 px-4 rounded-lg inline-block transition-all duration-300 transform focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn:hover {
+    @apply scale-105;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-opacity-90 focus:ring-primary;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border border-primary text-primary hover:bg-primary hover:text-white focus:ring-primary;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  .status-badge {
+    @apply px-2 py-1 rounded text-sm font-medium;
+  }
+
+  .status-badge-active {
+    @apply bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400;
+  }
+
+  .status-badge-closed {
+    @apply bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400;
+  }
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  --background-color: #ffffff;
+  --text-color: #1f2937;
+  --primary-color: #4f46e5;
+  --secondary-color: #f3f4f6;
+  --accent-color: #10b981;
+  --muted-color: #6b7280;
+  --card-background: #ffffff;
+  --border-color: #e5e7eb;
+}
+
+.dark {
+  --background-color: #111827;
+  --text-color: #f9fafb;
+  --primary-color: #6366f1;
+  --secondary-color: #1f2937;
+  --accent-color: #34d399;
+  --muted-color: #9ca3af;
+  --card-background: #1f2937;
+  --border-color: #374151;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.bg-card {
+    background-color: var(--card-background);
+}
+
+.text-muted {
+    color: var(--muted-color);
+}
+
 html, body {
-  @apply bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
   height: 100%;
 }
 
-
 app-register , app-login ,app-reset-password,app-forgot-password,app-home,app-profile {
-  width: 80%;
+  display: block;
+  height: 100%;
+    width: 80%;
 }
 
-
+app-job-detail , app-job-list, app-create-job{
+  width: 80%;
+}
 
 

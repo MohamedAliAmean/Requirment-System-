@@ -1,73 +1,75 @@
-<div class="container mx-auto p-6 bg-white shadow-lg rounded-lg my-8">
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Profile Settings</h1>
+<div class="bg-background-color text-text-color pt-24 pb-12">
+  <div class="container mx-auto p-6 bg-card shadow-lg rounded-lg my-8 text-text-color">
+    <h1 class="text-3xl font-bold text-text-color mb-6">Profile Settings</h1>
 
-  <div *ngIf="successMessage"
-    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-    <strong class="font-bold">Success!</strong>
-    <span class="block sm:inline">{{ successMessage }}</span>
-  </div>
+    <div *ngIf="successMessage"
+      class="bg-green-500 bg-opacity-20 border border-green-500 text-green-500 px-4 py-3 rounded relative mb-4"
+      role="alert">
+      <strong class="font-bold">Success!</strong>
+      <span class="block sm:inline">{{ successMessage }}</span>
+    </div>
 
-  <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-    role="alert">
-    <strong class="font-bold">Error!</strong>
-    <span class="block sm:inline">{{ errorMessage }}</span>
-  </div>
+    <div *ngIf="errorMessage"
+      class="bg-red-500 bg-opacity-20 border border-red-500 text-red-500 px-4 py-3 rounded relative mb-4" role="alert">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">{{ errorMessage }}</span>
+    </div>
 
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
-    <!-- Profile Picture Section -->
-    <div class="border p-4 rounded-md shadow-sm">
-      <label class="block text-lg font-medium text-gray-700 mb-2">Profile Picture</label>
-      <div class="flex items-center space-x-4">
-        <img
-          [src]="'http://localhost:8000/storage/' + (currentUser?.profile_picture_url || 'https://via.placeholder.com/100')"
-          alt="Current Profile Picture" class="w-24 h-24 rounded-full object-cover border-2 border-gray-300">
-        <div>
-          <input type="file" (change)="onProfilePictureSelected($event)" formControlName="profile_picture"
-            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-          <p class="text-xs text-gray-500 mt-1">Upload a new profile picture (Max 2MB, JPG, PNG, GIF)</p>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Profile Picture Section -->
+      <div class="border border-border-color p-4 rounded-md shadow-sm">
+        <label class="block text-lg font-medium text-text-color mb-2">Profile Picture</label>
+        <div class="flex items-center space-x-4">
+          <img
+            [src]="'http://localhost:8000/storage/' + (currentUser?.profile_picture_url || 'https://via.placeholder.com/100')"
+            alt="Current Profile Picture" class="w-24 h-24 rounded-full object-cover border-2 border-border-color">
+          <div>
+            <input type="file" (change)="onProfilePictureSelected($event)" formControlName="profile_picture"
+              class="block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-primary hover:file:bg-opacity-80">
+            <p class="text-xs text-muted mt-1">Upload a new profile picture (Max 2MB, JPG, PNG, GIF)</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Background Image Section -->
-    <div class="border p-4 rounded-md shadow-sm">
-      <label class="block text-lg font-medium text-gray-700 mb-2">Background Image</label>
-      <div class="flex items-center space-x-4">
-        <img
-          [src]="'http://localhost:8000/storage/' + (currentUser?.background_image_url || 'https://via.placeholder.com/200x70')"
-          alt="Current Background Image" class="w-48 h-16 object-cover rounded-md border-2 border-gray-300">
-        <div>
-          <input type="file" (change)="onBackgroundImageSelected($event)" formControlName="background_image"
-            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-          <p class="text-xs text-gray-500 mt-1">Upload a new background image (Max 2MB, JPG, PNG, GIF)</p>
+      <!-- Background Image Section -->
+      <div class="border border-border-color p-4 rounded-md shadow-sm">
+        <label class="block text-lg font-medium text-text-color mb-2">Background Image</label>
+        <div class="flex items-center space-x-4">
+          <img
+            [src]="'http://localhost:8000/storage/' + (currentUser?.background_image_url || 'https://via.placeholder.com/200x70')"
+            alt="Current Background Image" class="w-48 h-16 object-cover rounded-md border-2 border-border-color">
+          <div>
+            <input type="file" (change)="onBackgroundImageSelected($event)" formControlName="background_image"
+              class="block w-full text-sm text-muted file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-primary hover:file:bg-opacity-80">
+            <p class="text-xs text-muted mt-1">Upload a new background image (Max 2MB, JPG, PNG, GIF)</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Name Field -->
-    <div>
-      <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-      <input type="text" id="name" formControlName="name"
-        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900">
-      <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
-        class="text-red-600 text-sm mt-1">
-        Name is required.
+      <!-- Name Field -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-muted">Name</label>
+        <input type="text" id="name" formControlName="name"
+          class="mt-1 block w-full bg-secondary border border-border-color rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary text-text-color">
+        <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+          class="text-red-600 text-sm mt-1">
+          Name is required.
+        </div>
       </div>
-    </div>
 
-    <!-- Bio Field -->
-    <div>
-      <label for="bio" class="block text-sm font-medium text-gray-700">Bio</label>
-      <textarea id="bio" formControlName="bio" rows="4"
-        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"></textarea>
-    </div>
+      <!-- Bio Field -->
+      <div>
+        <label for="bio" class="block text-sm font-medium text-muted">Bio</label>
+        <textarea id="bio" formControlName="bio" rows="4"
+          class="mt-1 block w-full bg-secondary border border-border-color rounded-md shadow-sm p-2 focus:ring-primary focus:border-primary text-text-color"></textarea>
+      </div>
 
-    <!-- Submit Button -->
-    <div>
-      <button type="submit"
-        class="px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-        Update Profile
-      </button>
-    </div>
-  </form>
+      <!-- Submit Button -->
+      <div>
+        <button type="submit" class="btn btn-primary">
+          Update Profile
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

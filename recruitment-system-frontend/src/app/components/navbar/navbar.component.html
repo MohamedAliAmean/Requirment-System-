@@ -1,23 +1,22 @@
-<nav class="bg-gray-800 bg-opacity-80 backdrop-blur-md shadow-lg sticky top-0 z-50">
+<nav class="bg-secondary bg-opacity-80 backdrop-blur-md shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <div class="flex-shrink-0">
-                <a routerLink="/" class="text-white text-2xl font-bold tracking-wider">JobBoard</a>
+                <a routerLink="/" class="text-text-color text-2xl font-bold tracking-wider">JobBoard</a>
             </div>
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center space-x-4">
                 <ng-container *ngIf="!isLoggedIn">
                     <a routerLink="/login"
-                        class="text-gray-300 hover:text-white transition-colors duration-300">Login</a>
-                    <a routerLink="/register"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">Sign
+                        class="text-muted hover:text-text-color transition-colors duration-300">Login</a>
+                    <a routerLink="/register" class="btn btn-primary">Sign
                         Up</a>
                 </ng-container>
 
                 <!-- Dark Mode Toggle -->
-                <button (click)="toggleDarkMode()" class="text-gray-300 hover:text-white focus:outline-none">
+                <button (click)="toggleDarkMode()" class="text-muted hover:text-text-color focus:outline-none">
                     <ng-container *ngIf="!isDarkMode; else lightModeIcon">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -37,7 +36,7 @@
                 <ng-container *ngIf="isLoggedIn">
                     <div class="relative">
                         <button (click)="toggleProfileMenu()"
-                            class="flex items-center space-x-2 focus:outline-none text-white">
+                            class="flex items-center space-x-2 focus:outline-none text-text-color">
                             <span>Profile</span>
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -46,14 +45,14 @@
                             </svg>
                         </button>
                         <div *ngIf="isProfileMenuOpen"
-                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-20">
+                            class="absolute right-0 mt-2 w-48 bg-card rounded-md shadow-lg py-1 z-20">
                             <a routerLink="/profile"
-                                class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Your
+                                class="block px-4 py-2 text-sm text-text-color hover:bg-secondary">Your
                                 Profile</a>
                             <a routerLink="/settings"
-                                class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</a>
+                                class="block px-4 py-2 text-sm text-text-color hover:bg-secondary">Settings</a>
                             <button (click)="logout()"
-                                class="w-full text-left block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</button>
+                                class="w-full text-left block px-4 py-2 text-sm btn btn-danger">Logout</button>
                         </div>
                     </div>
                 </ng-container>
@@ -61,7 +60,7 @@
 
             <!-- Mobile Menu Button -->
             <div class="md:hidden flex items-center">
-                <button (click)="toggleMenu()" class="text-gray-300 hover:text-white focus:outline-none">
+                <button (click)="toggleMenu()" class="text-muted hover:text-text-color focus:outline-none">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path *ngIf="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16m-7 6h7" />
@@ -74,29 +73,29 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div *ngIf="isMenuOpen" class="md:hidden">
+    <div *ngIf="isMenuOpen" class="md:hidden bg-secondary">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <ng-container *ngIf="!isLoggedIn">
                 <a routerLink="/login"
-                    class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</a>
+                    class="text-muted hover:text-text-color block px-3 py-2 rounded-md text-base font-medium">Login</a>
                 <a routerLink="/register"
-                    class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Sign Up</a>
+                    class="text-muted hover:text-text-color block px-3 py-2 rounded-md text-base font-medium">Sign
+                    Up</a>
             </ng-container>
             <ng-container *ngIf="isLoggedIn">
                 <a routerLink="/profile"
-                    class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Your
+                    class="text-muted hover:text-text-color block px-3 py-2 rounded-md text-base font-medium">Your
                     Profile</a>
                 <a routerLink="/settings"
-                    class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Settings</a>
-                <button (click)="logout()"
-                    class="w-full text-left text-red-400 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Logout</button>
+                    class="text-muted hover:text-text-color block px-3 py-2 rounded-md text-base font-medium">Settings</a>
+                <button (click)="logout()" class="w-full text-left btn btn-danger mt-2">Logout</button>
             </ng-container>
 
             <!-- Dark Mode Toggle in Mobile -->
-            <div class="border-t border-gray-700 my-2"></div>
+            <div class="border-t border-border-color my-2"></div>
             <div class="flex justify-between items-center px-3 py-2">
-                <span class="text-gray-300 font-medium">Dark Mode</span>
-                <button (click)="toggleDarkMode()" class="text-gray-300 hover:text-white focus:outline-none">
+                <span class="text-muted font-medium">Dark Mode</span>
+                <button (click)="toggleDarkMode()" class="text-muted hover:text-text-color focus:outline-none">
                     <ng-container *ngIf="!isDarkMode; else lightModeIconMobile">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
