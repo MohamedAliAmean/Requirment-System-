@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AllJobsComponent implements OnInit {
   jobs: any[] = [];
+  filteredJobs: any[] = [];
   isLoading: boolean = true;
   errorMessage: string | null = null;
   currentUser: UserData | null = null;
@@ -46,6 +47,7 @@ export class AllJobsComponent implements OnInit {
     this.jobService.getJobs().subscribe({
       next: (res) => {
         this.jobs = res.data || res;
+        this.filterJobs();
         this.isLoading = false;
       },
       error: () => {
@@ -61,11 +63,20 @@ export class AllJobsComponent implements OnInit {
       next: (res) => {
         const applications = res.data || res;
         this.appliedJobIds = new Set(applications.map((app: any) => app.job_id));
+        this.filterJobs();
       },
       error: () => {
         // Ignore error, just don't block UI
       }
     });
+  }
+
+  filterJobs(): void {
+    if (this.currentUser?.role === 'applicant') {
+      this.filteredJobs = this.jobs.filter(job => !this.appliedJobIds.has(job.id));
+    } else {
+      this.filteredJobs = this.jobs;
+    }
   }
 
   canApply(jobId: number): boolean {
@@ -90,6 +101,14 @@ export class AllJobsComponent implements OnInit {
     this.applySuccess = null;
   }
 
+  // Handle clicks on the modal overlay
+  onModalOverlayClick(event: MouseEvent): void {
+    // Check if the click was on the overlay itself (not its children)
+    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
+      this.closeApplyModal();
+    }
+  }
+
   onCvSelected(event: any): void {
     const file = event.target.files[0];
     this.cvFile = file ? file : null;
@@ -110,6 +129,7 @@ export class AllJobsComponent implements OnInit {
       next: () => {
         this.applySuccess = 'Application submitted successfully!';
         this.appliedJobIds.add(this.selectedJob.id);
+        this.filterJobs();
         setTimeout(() => this.closeApplyModal(), 1500);
         this.isApplying = false;
       },

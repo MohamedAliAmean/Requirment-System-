@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobApplicationService } from '../services/job-application.service';
 import { AuthService } from '../services/auth.service';
@@ -66,6 +66,14 @@ export class MyApplicationsComponent implements OnInit {
   closeDetailsModal(): void {
     this.showDetailsModal = false;
     this.selectedApplication = null;
+  }
+
+  // Handle clicks on the modal overlay
+  onModalOverlayClick(event: MouseEvent): void {
+    // Check if the click was on the overlay itself (not its children)
+    if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
+      this.closeDetailsModal();
+    }
   }
 
   getStatusColor(status: string): string {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { JobService } from '../../../services/job.service';
 import { Job } from '../../../models/job.model';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-edit-job',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './edit-job.component.html',
   styleUrl: './edit-job.component.css'
 })
@@ -18,7 +18,7 @@ export class EditJobComponent implements OnInit {
   job: Job | null = null;
   successMessage: string | null = null;
   errorMessage: string | null = null;
-  
+
   // Add status options for the dropdown
   statusOptions = ['active', 'closed'];
 

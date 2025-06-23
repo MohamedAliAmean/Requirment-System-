@@ -84,7 +84,7 @@ app-register , app-login ,app-reset-password,app-forgot-password,app-home,app-pr
     width: 80%;
 }
 
-app-job-detail , app-job-list, app-create-job{
+app-job-detail , app-job-list, app-create-job,app-edit-job ,app-my-applications, app-all-jobs{
   width: 80%;
 }
 

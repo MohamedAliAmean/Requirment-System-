@@ -6,6 +6,12 @@ import { AuthService } from '../../../services/auth.service';
 import { NotificationService } from '../../../services/notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
+interface GroupedApplications {
+  title: string;
+  jobId: number;
+  applications: any[];
+}
+
 @Component({
   selector: 'app-show-applications',
   standalone: true,
@@ -16,6 +22,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ShowApplicationsComponent implements OnInit {
   jobId: number | null = null;
   applications: any[] = [];
+  groupedApplications: GroupedApplications[] = [];
   errorMessage: string | null = null;
   successMessage: string | null = null;
   selectedApplication: any = null;
@@ -41,6 +48,26 @@ export class ShowApplicationsComponent implements OnInit {
     });
   }
 
+  private groupApplicationsByJob(): void {
+    const groupedMap = new Map<number, GroupedApplications>();
+
+    this.applications.forEach(app => {
+      if (!app.job) return;
+
+      if (!groupedMap.has(app.job.id)) {
+        groupedMap.set(app.job.id, {
+          title: app.job.title,
+          jobId: app.job.id,
+          applications: []
+        });
+      }
+
+      groupedMap.get(app.job.id)?.applications.push(app);
+    });
+
+    this.groupedApplications = Array.from(groupedMap.values());
+  }
+
   fetchApplicationsForJob(): void {
     if (!this.jobId) return;
     this.isLoading = true;
@@ -48,15 +75,18 @@ export class ShowApplicationsComponent implements OnInit {
       next: (response) => {
         if (response && Array.isArray(response.data)) {
           this.applications = response.data;
+          this.groupApplicationsByJob();
           this.errorMessage = null;
         } else {
           this.applications = [];
+          this.groupedApplications = [];
           this.errorMessage = 'Failed to load applications. Unexpected data format from server.';
         }
         this.isLoading = false;
       },
       error: (error: HttpErrorResponse) => {
         this.applications = [];
+        this.groupedApplications = [];
         this.errorMessage = 'Failed to load applications: ' + (error.error?.message || error.statusText || 'Unknown error');
         this.isLoading = false;
       }
@@ -69,15 +99,18 @@ export class ShowApplicationsComponent implements OnInit {
       next: (response) => {
         if (response && Array.isArray(response.data)) {
           this.applications = response.data;
+          this.groupApplicationsByJob();
           this.errorMessage = null;
         } else {
           this.applications = [];
+          this.groupedApplications = [];
           this.errorMessage = 'Failed to load applications. Unexpected data format from server.';
         }
         this.isLoading = false;
       },
       error: (error: HttpErrorResponse) => {
         this.applications = [];
+        this.groupedApplications = [];
         this.errorMessage = 'Failed to load applications: ' + (error.error?.message || error.statusText || 'Unknown error');
         this.isLoading = false;
       }
@@ -94,6 +127,7 @@ export class ShowApplicationsComponent implements OnInit {
         const index = this.applications.findIndex(app => app.id === applicationId);
         if (index !== -1) {
           this.applications[index].status = newStatus;
+          this.groupApplicationsByJob(); // Regroup applications to reflect changes
         }
 
         // Trigger notification for the applicant
